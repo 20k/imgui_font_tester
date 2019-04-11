@@ -51,7 +51,11 @@ int main()
                 io.Fonts->Clear();
 
                 //io.Fonts->AddFontDefault();
-                ImFont* font = io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
+
+                if(!use_stb)
+                    io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
+                else
+                    io.Fonts->AddFontDefault();
 
                 if(use_stb)
                 {
@@ -83,9 +87,9 @@ int main()
                     font_atlas.update((const unsigned char*)atlas->TexPixelsNewRGBA32);
 
                     atlas->TexID = (void*)font_atlas.getNativeHandle();
-
-                    rebuild_font = false;
                 }
+
+                rebuild_font = false;
             }
         }
 
