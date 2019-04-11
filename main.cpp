@@ -36,6 +36,8 @@ int main()
     bool rebuild_font = true;
     uint32_t subpixel_mode = ImGuiFreeType::LEGACY;
 
+    uint32_t use_stb = 0;
+
     ImGui::SetStyleLinearColor(sett.sRgbCapable);
 
     sf::Clock imgui_delta;
@@ -46,28 +48,44 @@ int main()
             if(rebuild_font)
             {
                 ImGuiIO& io = ImGui::GetIO();
+                io.Fonts->Clear();
+
                 //io.Fonts->AddFontDefault();
                 ImFont* font = io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
 
-                ImFontAtlas* atlas = ImGui::SFML::GetFontAtlas();
-
-                auto write_data =  [](unsigned char* data, void* tex_id, int width, int height)
+                if(use_stb)
                 {
-                    sf::Texture* tex = (sf::Texture*)tex_id;
+                    ImFontAtlas* natlas = new ImFontAtlas;
 
-                    tex->create(width, height);
-                    tex->update((const unsigned char*)data);
-                };
+                    ImGui::CreateContext(natlas);
 
-                uint32_t font_mode = ImGuiFreeType::ForceAutoHint;
+                    ImGuiIO& io = ImGui::GetIO();
+                    unsigned char* pixels;
+                    int width, height;
 
-                ImGuiFreeType::BuildFontAtlas(atlas, font_mode, subpixel_mode);
+                    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-                write_data((unsigned char*)atlas->TexPixelsNewRGBA32, (void*)&font_atlas, atlas->TexWidth, atlas->TexHeight);
+                    font_atlas.create(width, height);
+                    font_atlas.update(pixels);
 
-                atlas->TexID = (void*)font_atlas.getNativeHandle();
+                    io.Fonts->TexID = (void*)font_atlas.getNativeHandle();
+                }
+                else
+                {
 
-                rebuild_font = false;
+                    ImFontAtlas* atlas = ImGui::SFML::GetFontAtlas();
+
+                    uint32_t font_mode = ImGuiFreeType::ForceAutoHint;
+
+                    ImGuiFreeType::BuildFontAtlas(atlas, font_mode, subpixel_mode);
+
+                    font_atlas.create(atlas->TexWidth, atlas->TexHeight);
+                    font_atlas.update((const unsigned char*)atlas->TexPixelsNewRGBA32);
+
+                    atlas->TexID = (void*)font_atlas.getNativeHandle();
+
+                    rebuild_font = false;
+                }
             }
         }
 
@@ -101,6 +119,11 @@ int main()
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::LIGHT, "LIGHT");
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::NONE, "NONE");
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::DISABLE_SUBPIXEL_AA, "DISABLE_SUBPIXEL_AA");
+
+        ImGui::NewLine();
+
+        rebuild_font |= CheckBoxHelper(use_stb, 0, "Freetype");
+        rebuild_font |= CheckBoxHelper(use_stb, 1, "STB");
 
         ImGui::End();
 
