@@ -61,6 +61,14 @@ int main()
 
         ImGui::SFML::Update(window,  imgui_delta.restart());
 
+        ImGui::Begin("Font Tester");
+
+        ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
+
+        ImGui::End();
+
         ImGui::SFML::Render(window);
 
         window.display();
