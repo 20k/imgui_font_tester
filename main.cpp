@@ -6,6 +6,21 @@
 #include <imgui-sfml/imgui-SFML.h>
 #include <imgui/misc/freetype/imgui_freetype.h>
 
+bool CheckBoxHelper(uint32_t& mode, int target_mode, const std::string& text)
+{
+    bool is_mode = mode == target_mode;
+    bool was_mode = is_mode;
+
+    ImGui::Checkbox(text.c_str(), &is_mode);
+
+    if(is_mode)
+    {
+        mode = target_mode;
+    }
+
+    return is_mode != was_mode;
+}
+
 int main()
 {
     sf::ContextSettings sett;
@@ -18,23 +33,8 @@ int main()
 
     ImGui::SFML::Init(window, false);
 
-    ImGuiIO& io = ImGui::GetIO();
-    //io.Fonts->AddFontDefault();
-    ImFont* font = io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
-
-    ImFontAtlas* atlas = ImGui::SFML::GetFontAtlas();
-
-    auto write_data =  [](unsigned char* data, void* tex_id, int width, int height)
-    {
-        sf::Texture* tex = (sf::Texture*)tex_id;
-
-        tex->create(width, height);
-        tex->update((const unsigned char*)data);
-    };
-
-    ImGuiFreeType::BuildFontAtlas(atlas, ImGuiFreeType::ForceAutoHint, ImGuiFreeType::LEGACY, write_data, (void*)&font_atlas);
-
-    atlas->TexID = (void*)font_atlas.getNativeHandle();
+    bool rebuild_font = true;
+    uint32_t subpixel_mode = ImGuiFreeType::LEGACY;
 
     ImGui::SetStyleLinearColor(sett.sRgbCapable);
 
@@ -42,6 +42,33 @@ int main()
 
     while(window.isOpen())
     {
+        {
+            if(rebuild_font)
+            {
+                ImGuiIO& io = ImGui::GetIO();
+                //io.Fonts->AddFontDefault();
+                ImFont* font = io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
+
+                ImFontAtlas* atlas = ImGui::SFML::GetFontAtlas();
+
+                auto write_data =  [](unsigned char* data, void* tex_id, int width, int height)
+                {
+                    sf::Texture* tex = (sf::Texture*)tex_id;
+
+                    tex->create(width, height);
+                    tex->update((const unsigned char*)data);
+                };
+
+                uint32_t font_mode = ImGuiFreeType::ForceAutoHint;
+
+                ImGuiFreeType::BuildFontAtlas(atlas, font_mode, subpixel_mode, write_data, (void*)&font_atlas);
+
+                atlas->TexID = (void*)font_atlas.getNativeHandle();
+
+                rebuild_font = false;
+            }
+        }
+
         sf::Event event;
 
         while(window.pollEvent(event))
@@ -66,6 +93,12 @@ int main()
         ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
+
+        rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::DEFAULT, "DEFAULT");
+        rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::LEGACY, "LEGACY");
+        rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::LIGHT, "LIGHT");
+        rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::NONE, "NONE");
+        rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::DISABLE_SUBPIXEL_AA, "DISABLE_SUBPIXEL_AA");
 
         ImGui::End();
 
