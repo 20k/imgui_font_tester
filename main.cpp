@@ -61,7 +61,9 @@ int main()
 
                 uint32_t font_mode = ImGuiFreeType::ForceAutoHint;
 
-                ImGuiFreeType::BuildFontAtlas(atlas, font_mode, subpixel_mode, write_data, (void*)&font_atlas);
+                ImGuiFreeType::BuildFontAtlas(atlas, font_mode, subpixel_mode);
+
+                write_data((unsigned char*)atlas->TexPixelsNewRGBA32, (void*)&font_atlas, atlas->TexWidth, atlas->TexHeight);
 
                 atlas->TexID = (void*)font_atlas.getNativeHandle();
 
