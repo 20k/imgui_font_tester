@@ -31,7 +31,26 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
+			<Add directory="deps" />
+			<Add directory="deps/imgui" />
+			<Add directory="deps/freetype2/include" />
 		</Compiler>
+		<Linker>
+			<Add option="-lsfml-graphics-s" />
+			<Add option="-lsfml-window-s" />
+			<Add option="-lsfml-system-s" />
+			<Add option="-lfreetype" />
+			<Add option="-lopengl32" />
+			<Add option="-lwinmm" />
+			<Add option="-lgdi32" />
+		</Linker>
+		<Unit filename="deps/imgui-sfml/imgui-SFML.cpp" />
+		<Unit filename="deps/imgui/imgui.cpp" />
+		<Unit filename="deps/imgui/imgui_demo.cpp" />
+		<Unit filename="deps/imgui/imgui_draw.cpp" />
+		<Unit filename="deps/imgui/imgui_widgets.cpp" />
+		<Unit filename="deps/imgui/misc/freetype/imgui_freetype.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

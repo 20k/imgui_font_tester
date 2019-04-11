@@ -1,0 +1,9 @@
+[submodule "deps/imgui"]
+	path = deps/imgui
+	url = https://github.com/20k/imgui-fork
+[submodule "deps/imgui-sfml"]
+	path = deps/imgui-sfml
+	url = https://github.com/20k/imgui-sfml-fork
+[submodule "deps/freetype2"]
+	path = deps/freetype2
+	url = https://github.com/ubawurinna/freetype-windows-binaries
