@@ -25,11 +25,15 @@ int main()
 {
     sf::ContextSettings sett;
     sett.antialiasingLevel = 8;
-    sett.sRgbCapable = false;
+    sett.sRgbCapable = true;
 
     sf::RenderWindow window(sf::VideoMode(1600, 900), "hi", sf::Style::Default, sett);
 
+    ///this needs to be srgb correct!!!! freetype almost certainly renders srgb out (aka the entire point of srgb) as its
+    ///0 -> 255 byte data, rendering linear data out would be nonsense
+    ///nope it renders linear
     sf::Texture font_atlas;
+    font_atlas.setSrgb(false);
 
     ImGui::SFML::Init(window, false);
 
@@ -42,6 +46,8 @@ int main()
 
     sf::Clock imgui_delta;
 
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(255, 255, 255, 255));
+
     while(window.isOpen())
     {
         {
@@ -53,7 +59,7 @@ int main()
                 //io.Fonts->AddFontDefault();
 
                 if(!use_stb)
-                    io.Fonts->AddFontFromFileTTF("VeraMono.ttf", 14.f);
+                    io.Fonts->AddFontFromFileTTF("Arial.ttf", 14.f);
                 else
                     io.Fonts->AddFontDefault();
 
@@ -76,7 +82,6 @@ int main()
                 }
                 else
                 {
-
                     ImFontAtlas* atlas = ImGui::SFML::GetFontAtlas();
 
                     uint32_t font_mode = ImGuiFreeType::ForceAutoHint;
@@ -114,9 +119,11 @@ int main()
 
         ImGui::Begin("Font Tester");
 
-        ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        ImGui::TextColored(ImVec4(1,0,0,1), "Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        ImGui::TextColored(ImVec4(0,0,0,1), "The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
 
-        ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
+        //ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        //ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
 
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::DEFAULT, "DEFAULT");
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::LEGACY, "LEGACY");
