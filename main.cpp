@@ -46,7 +46,7 @@ int main()
 
     sf::Clock imgui_delta;
 
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(255, 255, 255, 255));
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(255, 255, 255, 255));
 
     while(window.isOpen())
     {
@@ -119,11 +119,11 @@ int main()
 
         ImGui::Begin("Font Tester");
 
-        ImGui::TextColored(ImVec4(1,0,0,1), "Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        ImGui::TextColored(ImVec4(0,0,0,1), "The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
+        //ImGui::TextColored(ImVec4(1,0,0,1), "Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        //ImGui::TextColored(ImVec4(0,0,0,1), "The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
 
-        //ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        //ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
+        ImGui::Text("Hello font 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        ImGui::Text("The quick brown fox jumps over the lazy dog ({}).!<>/|\\");
 
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::DEFAULT, "DEFAULT");
         rebuild_font |= CheckBoxHelper(subpixel_mode, ImGuiFreeType::LEGACY, "LEGACY");
